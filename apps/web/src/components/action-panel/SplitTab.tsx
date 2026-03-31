@@ -85,13 +85,14 @@ export default function SplitTab() {
   };
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex-1 flex flex-col justify-between gap-4">
+      <div className="flex flex-col gap-4">
       {/* SOL input */}
       <div className="flex flex-col gap-1.5">
-        <label className="text-xs text-text-secondary eyebrow-xs">
+        <label className="text-sm text-text-primary">
           How much SOL goes into the new account?
         </label>
-        <div className="relative flex items-center h-11 px-3 rounded-[6px] bg-layers-surface-lowered-1 border-t border-layers-elevation-highlight shadow-[inset_0px_-1px_0px_0px_var(--layers-elevation-shadow)]">
+        <div className="relative flex items-center h-11 px-3 rounded-[6px] bg-layers-surface-lowered-1 border-t border-layers-elevation-shadow shadow-[inset_0px_-1px_0px_0px_var(--layers-elevation-highlight)]">
           <input
             type="number"
             min="0"
@@ -119,6 +120,7 @@ export default function SplitTab() {
         <span className="text-xs text-text-secondary eyebrow-xs">
           Resulting Accounts
         </span>
+
 
         {/* Original account */}
         <div className="flex items-center gap-3 px-3 py-2.5 rounded-[6px] bg-layers-surface-raised-1 border-t border-layers-elevation-highlight shadow-[inset_0px_-1px_0px_0px_var(--layers-elevation-shadow)]">
@@ -181,50 +183,53 @@ export default function SplitTab() {
         </div>
       </div>
 
-      {/* Info alert */}
-      <div className="flex gap-2 p-3 rounded-[6px] bg-layers-surface-raised-1 border border-layers-elevation-shadow text-xs text-text-secondary">
-        <span className="shrink-0">ℹ</span>
-        <span>
-          Both accounts inherit the same validator and activation status. A new
-          stake account address is generated for the split portion.
-        </span>
       </div>
 
-      {/* Tx feedback */}
-      {txStatus === "success" && txSignature && (
-        <div className="p-3 rounded-[6px] bg-[rgba(13,156,94,0.1)] border border-[rgba(13,156,94,0.3)] text-xs text-brand-action-green flex flex-col gap-1">
-          <span className="font-semibold">Split confirmed</span>
-          <a
-            href={`https://solscan.io/tx/${txSignature}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="underline break-all"
-          >
-            {txSignature.slice(0, 20)}...
-          </a>
-          <button onClick={resetTx} className="mt-1 underline text-left">
-            Dismiss
-          </button>
+      {/* Bottom section */}
+      <div className="flex flex-col gap-3">
+        {/* Info alert */}
+        <div className="p-3 rounded-[6px] bg-layers-surface-lowered-1 border-t border-layers-elevation-shadow shadow-[inset_0px_-1px_0px_0px_var(--layers-elevation-highlight)] text-xs text-text-secondary">
+          Both accounts inherit the same validator and activation status. A new
+          stake account address is generated for the split portion.
         </div>
-      )}
-      {txStatus === "error" && txError && (
-        <div className="p-3 rounded-[6px] bg-[rgba(229,72,77,0.1)] border border-[rgba(229,72,77,0.3)] text-xs text-brand-action-red">
-          <span className="font-semibold">Error: </span>
-          {txError}
-          <button onClick={resetTx} className="ml-2 underline">
-            Dismiss
-          </button>
-        </div>
-      )}
 
-      {/* CTA */}
-      <Button
-        className="w-full"
-        onClick={handleSplit}
-        disabled={!!validationError || splitSol === 0 || txStatus === "pending"}
-      >
-        {txStatus === "pending" ? "Splitting..." : "Confirm Split"}
-      </Button>
+        {/* Tx feedback */}
+        {txStatus === "success" && txSignature && (
+          <div className="p-3 rounded-[6px] bg-[rgba(13,156,94,0.1)] border border-[rgba(13,156,94,0.3)] text-xs text-brand-action-green flex flex-col gap-1">
+            <span className="font-semibold">Split confirmed</span>
+            <a
+              href={`https://solscan.io/tx/${txSignature}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline break-all"
+            >
+              {txSignature.slice(0, 20)}...
+            </a>
+            <button onClick={resetTx} className="mt-1 underline text-left">
+              Dismiss
+            </button>
+          </div>
+        )}
+        {txStatus === "error" && txError && (
+          <div className="p-3 rounded-[6px] bg-[rgba(229,72,77,0.1)] border border-[rgba(229,72,77,0.3)] text-xs text-brand-action-red">
+            <span className="font-semibold">Error: </span>
+            {txError}
+            <button onClick={resetTx} className="ml-2 underline">
+              Dismiss
+            </button>
+          </div>
+        )}
+
+        {/* CTA */}
+        <Button
+          size="lg"
+          className="w-full"
+          onClick={handleSplit}
+          disabled={!!validationError || splitSol === 0 || txStatus === "pending"}
+        >
+          {txStatus === "pending" ? "Splitting..." : "Confirm Split"}
+        </Button>
+      </div>
     </div>
   );
 }

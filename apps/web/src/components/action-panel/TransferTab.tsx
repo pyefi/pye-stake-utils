@@ -107,7 +107,8 @@ export default function TransferTab() {
   }
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex-1 flex flex-col justify-between gap-4">
+      <div className="flex flex-col gap-4">
       {/* Authority type selector */}
       <div className="flex flex-col gap-1.5">
         <label className="text-xs text-text-secondary eyebrow-xs">
@@ -144,7 +145,7 @@ export default function TransferTab() {
           value={newAuthority}
           onChange={(e) => setNewAuthority(e.target.value)}
           placeholder="Enter Solana address"
-          className="h-11 px-3 rounded-[6px] bg-layers-surface-lowered-1 border-t border-layers-elevation-highlight text-sm text-text-primary placeholder:text-text-secondary shadow-[inset_0px_-1px_0px_0px_var(--layers-elevation-shadow)] outline-none focus:ring-1 focus:ring-brand-primary-purple"
+          className="h-11 px-3 rounded-[6px] bg-layers-surface-lowered-1 border-t border-layers-elevation-shadow text-sm text-text-primary placeholder:text-text-secondary shadow-[inset_0px_-1px_0px_0px_var(--layers-elevation-highlight)] outline-none focus:ring-1 focus:ring-brand-primary-purple"
           style={monoStyle}
         />
         {newAuthority && !addressValid && (
@@ -154,52 +155,55 @@ export default function TransferTab() {
         )}
       </div>
 
-      {/* Warning */}
-      <div className="flex gap-2 p-3 rounded-[6px] bg-[rgba(229,72,77,0.08)] border border-[rgba(229,72,77,0.25)] text-xs text-text-secondary">
-        <span className="shrink-0">⚠</span>
-        <span>
-          This action is irreversible. Make sure the new authority address is
-          correct before confirming.
-        </span>
       </div>
 
-      {/* Tx feedback */}
-      {txStatus === "success" && txSignature && (
-        <div className="p-3 rounded-[6px] bg-[rgba(13,156,94,0.1)] border border-[rgba(13,156,94,0.3)] text-xs text-brand-action-green flex flex-col gap-1">
-          <span className="font-semibold">Transfer confirmed</span>
-          <a
-            href={`https://solscan.io/tx/${txSignature}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="underline break-all"
-          >
-            {txSignature.slice(0, 20)}...
-          </a>
-          <button onClick={resetTx} className="mt-1 underline text-left">
-            Dismiss
-          </button>
+      {/* Bottom section */}
+      <div className="flex flex-col gap-3">
+        {/* Warning */}
+        <div className="p-3 rounded-[6px] bg-[rgba(229,72,77,0.08)] border border-[rgba(229,72,77,0.25)] text-xs text-text-secondary">
+          This action is irreversible. Make sure the new authority address is
+          correct before confirming.
         </div>
-      )}
-      {txStatus === "error" && txError && (
-        <div className="p-3 rounded-[6px] bg-[rgba(229,72,77,0.1)] border border-[rgba(229,72,77,0.3)] text-xs text-brand-action-red">
-          <span className="font-semibold">Error: </span>
-          {txError}
-          <button onClick={resetTx} className="ml-2 underline">
-            Dismiss
-          </button>
-        </div>
-      )}
 
-      {/* CTA */}
-      <Button
-        className="w-full"
-        onClick={handleTransfer}
-        disabled={!addressValid || txStatus === "pending"}
-      >
-        {txStatus === "pending"
-          ? "Transferring..."
-          : `Transfer ${AUTHORITY_LABELS[authorityType]}`}
-      </Button>
+        {/* Tx feedback */}
+        {txStatus === "success" && txSignature && (
+          <div className="p-3 rounded-[6px] bg-[rgba(13,156,94,0.1)] border border-[rgba(13,156,94,0.3)] text-xs text-brand-action-green flex flex-col gap-1">
+            <span className="font-semibold">Transfer confirmed</span>
+            <a
+              href={`https://solscan.io/tx/${txSignature}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline break-all"
+            >
+              {txSignature.slice(0, 20)}...
+            </a>
+            <button onClick={resetTx} className="mt-1 underline text-left">
+              Dismiss
+            </button>
+          </div>
+        )}
+        {txStatus === "error" && txError && (
+          <div className="p-3 rounded-[6px] bg-[rgba(229,72,77,0.1)] border border-[rgba(229,72,77,0.3)] text-xs text-brand-action-red">
+            <span className="font-semibold">Error: </span>
+            {txError}
+            <button onClick={resetTx} className="ml-2 underline">
+              Dismiss
+            </button>
+          </div>
+        )}
+
+        {/* CTA */}
+        <Button
+          size="lg"
+          className="w-full"
+          onClick={handleTransfer}
+          disabled={!addressValid || txStatus === "pending"}
+        >
+          {txStatus === "pending"
+            ? "Transferring..."
+            : `Transfer ${AUTHORITY_LABELS[authorityType]}`}
+        </Button>
+      </div>
     </div>
   );
 }
