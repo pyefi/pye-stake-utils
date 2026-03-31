@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { useWallet, useConnection } from "@solana/wallet-adapter-react";
 import { PublicKey } from "@solana/web3.js";
 import { buildSplitStakeTransaction } from "pye-stake-utils";
@@ -32,6 +33,8 @@ export default function SplitTab() {
   const setTxSuccess = useUIStore((s) => s.setTxSuccess);
   const setTxError = useUIStore((s) => s.setTxError);
   const resetTx = useUIStore((s) => s.resetTx);
+
+  const [inputStr, setInputStr] = useState("");
 
   const selectedAccount =
     stakeAccounts.find((a) => a.pubkey === selectedPubkey) ?? null;
@@ -78,6 +81,7 @@ export default function SplitTab() {
       await connection.confirmTransaction(sig, "confirmed");
       setTxSuccess(sig);
       setSplitSol(0);
+      setInputStr("");
       refresh(connection, new PublicKey(publicKey));
     } catch (err) {
       setTxError(err instanceof Error ? err.message : String(err));
@@ -94,11 +98,17 @@ export default function SplitTab() {
         </label>
         <div className="relative flex items-center h-11 px-3 rounded-[6px] bg-layers-surface-lowered-1 border-t border-layers-elevation-shadow shadow-[inset_0px_-1px_0px_0px_var(--layers-elevation-highlight)]">
           <input
-            type="number"
-            min="0"
-            step="0.001"
-            value={splitSol === 0 ? "" : splitSol}
-            onChange={(e) => setSplitSol(parseFloat(e.target.value) || 0)}
+            type="text"
+            inputMode="decimal"
+            value={inputStr}
+            onChange={(e) => {
+              const raw = e.target.value;
+              if (raw === "" || /^\d*\.?\d*$/.test(raw)) {
+                setInputStr(raw);
+                const parsed = parseFloat(raw);
+                setSplitSol(isNaN(parsed) ? 0 : parsed);
+              }
+            }}
             placeholder="0"
             className="flex-1 bg-transparent text-sm text-text-primary placeholder:text-text-secondary outline-none"
             style={monoStyle}
