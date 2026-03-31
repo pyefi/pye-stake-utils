@@ -10,9 +10,8 @@ import "./globals.css";
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
 
-// Place garamond-narrow.otf at public/fonts/garamond-narrow.otf
 const garamond = localFont({
-  src: "../../public/fonts/garamond-narrow.otf",
+  src: "../../public/garamond-narrow.otf",
   variable: "--font-garamond",
   display: "swap",
 });
