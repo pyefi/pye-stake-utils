@@ -48,7 +48,7 @@ export default function StateChangeTab() {
     if (!selectedAccount || !publicKey) return;
     setTxStatus("pending");
     try {
-      const tx = await buildDeactivateStakeTransaction({
+      const { transaction: tx } = await buildDeactivateStakeTransaction({
         connection,
         stakeAccountPubkey: new PublicKey(selectedAccount.pubkey),
         authorizedPubkey: new PublicKey(publicKey),
@@ -66,7 +66,7 @@ export default function StateChangeTab() {
     if (!selectedAccount || !publicKey || !voteAccount) return;
     setTxStatus("pending");
     try {
-      const tx = await buildDelegateStakeTransaction({
+      const { transaction: tx } = await buildDelegateStakeTransaction({
         connection,
         stakeAccountPubkey: new PublicKey(selectedAccount.pubkey),
         authorizedPubkey: new PublicKey(publicKey),

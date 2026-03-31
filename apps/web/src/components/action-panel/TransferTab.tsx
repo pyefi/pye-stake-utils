@@ -71,7 +71,7 @@ export default function TransferTab() {
         currentAuthorityPubkey: new PublicKey(publicKey),
         newAuthorityPubkey: new PublicKey(newAuthority),
       };
-      const tx =
+      const { transaction: tx } =
         authorityType === "stake"
           ? await buildTransferStakeAuthorityTransaction(params)
           : await buildTransferWithdrawAuthorityTransaction(params);
