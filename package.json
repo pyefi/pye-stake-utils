@@ -2,6 +2,7 @@
   "name": "pye-stake-utils",
   "version": "0.1.0",
   "description": "Swiss Army knife for Solana stake account operations",
+  "workspaces": ["apps/*"],
   "type": "module",
   "main": "src/index.ts",
   "scripts": {
