@@ -7,15 +7,15 @@ export async function fetchValidatorMap(): Promise<Map<string, { name: string; i
     const res = await fetch("https://api.stakewiz.com/validators");
     if (!res.ok) return new Map();
 
-    const data: Array<{ vote_account?: string; name?: string; avatar_url?: string }> =
+    const data: Array<{ vote_identity?: string; name?: string; image?: string }> =
       await res.json();
 
     const map = new Map<string, { name: string; icon: string }>();
     for (const v of data) {
-      if (v.vote_account) {
-        map.set(v.vote_account, {
+      if (v.vote_identity) {
+        map.set(v.vote_identity, {
           name: v.name ?? "Unknown Validator",
-          icon: v.avatar_url ?? "",
+          icon: v.image ?? "",
         });
       }
     }
