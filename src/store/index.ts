@@ -1,2 +1,2 @@
-export { createStakeStore } from "./stake-store.js";
-export type { StakeStore, StakeState, StakeActions } from "./stake-store.js";
+export { createStakeStore } from "./stake-store";
+export type { StakeStore, StakeState, StakeActions } from "./stake-store";

@@ -1,6 +1,6 @@
 import { Connection, PublicKey } from "@solana/web3.js";
-import { STAKE_PROGRAM_ID } from "../constants/index.js";
-import type { StakeAccount, StakeAccountState } from "../types/index.js";
+import { STAKE_PROGRAM_ID } from "../constants/index";
+import type { StakeAccount, StakeAccountState } from "../types/index";
 
 /**
  * Fetch all stake accounts owned (staker authority) by the given public key.

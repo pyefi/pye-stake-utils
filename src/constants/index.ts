@@ -4,4 +4,4 @@ export {
   SYSVAR_RENT,
   SYSVAR_STAKE_HISTORY,
   STAKE_CONFIG,
-} from "./programs.js";
+} from "./programs";

@@ -1,9 +1,9 @@
 export type {
   StakeAccountState,
   StakeAccount,
-} from "./stake.js";
+} from "./stake";
 
 export type {
   Validator,
   ValidatorId,
-} from "./validator.js";
+} from "./validator";
