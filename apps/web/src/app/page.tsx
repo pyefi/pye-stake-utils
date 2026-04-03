@@ -7,11 +7,11 @@ import MobileLayout from "@/components/MobileLayout";
 
 export default function Home() {
   return (
-    <div className="min-h-screen flex flex-col bg-layers-base-primary">
+    <div className="h-screen flex flex-col bg-layers-base-primary overflow-hidden md:overflow-auto md:h-auto md:min-h-screen">
       <StakeSyncer />
       <Header />
-      <main className="flex-1 flex flex-col items-center pt-4 pb-6 md:py-12 px-4">
-        <div className="w-full max-w-[826px] flex flex-col gap-6">
+      <main className="flex-1 min-h-0 flex flex-col items-center pt-4 pb-6 md:py-12 px-4">
+        <div className="w-full max-w-[826px] flex flex-col gap-6 flex-1 min-h-0">
           <div className="flex flex-col gap-1">
             <h1
               className="text-[32px] text-text-primary font-light"
@@ -25,7 +25,7 @@ export default function Home() {
           </div>
 
           {/* Mobile: single-panel navigation */}
-          <div className="md:hidden">
+          <div className="md:hidden flex-1 min-h-0">
             <MobileLayout />
           </div>
 

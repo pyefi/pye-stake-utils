@@ -8,7 +8,7 @@ export default function MobileLayout() {
   const selectedPubkey = useUIStore((s) => s.selectedAccountPubkey);
 
   return (
-    <div className="h-[calc(100vh-180px)]">
+    <div className="h-full min-h-[300px]">
       {selectedPubkey ? <ActionPanel /> : <StakeAccountList />}
     </div>
   );
