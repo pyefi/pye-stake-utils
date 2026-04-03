@@ -18,31 +18,39 @@ export default function ActionPanel() {
 
   return (
     <div className="flex flex-col h-full bg-layers-surface-default rounded-[6px] overflow-hidden shadow-[0px_4px_8px_0px_rgba(0,0,0,0.07)] border-t border-layers-elevation-highlight">
-      {/* Tab bar */}
-      <div className="flex items-start bg-layers-elevation-shadow gap-px shrink-0">
-        {tabs.map((tab, i) => {
-          const active = activeTab === tab.id;
-          return (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className={`relative flex items-center h-[48px] px-4 border-t border-layers-elevation-highlight overflow-clip ${
-                i === 0 ? "rounded-tl-[6px]" : ""
-              } ${
-                active
-                  ? "bg-layers-surface-raised-1 text-text-primary"
-                  : "bg-layers-surface-default text-text-secondary hover:text-text-primary"
-              }`}
-            >
-              <span className="text-sm leading-[20px]">{tab.label}</span>
-              <div className="absolute inset-0 pointer-events-none rounded-[inherit] shadow-[inset_0px_-1px_0px_0px_var(--layers-elevation-shadow)]" />
-            </button>
-          );
-        })}
-        {/* Trailing fill */}
-        <div className="relative flex-1 h-[48px] bg-layers-surface-default border-t border-layers-elevation-highlight rounded-tr-[6px] overflow-clip">
-          <div className="absolute inset-0 pointer-events-none rounded-[inherit] shadow-[inset_0px_-1px_0px_0px_var(--layers-elevation-shadow)]" />
+      {/* Module header with pill tabs */}
+      <div className="relative flex items-center px-4 py-3 shrink-0 rounded-t-[6px]">
+        <div className="absolute inset-0 pointer-events-none bg-layers-surface-default rounded-t-[6px]" />
+        <div className="relative flex items-start p-1 rounded-[4px] border-t border-layers-elevation-shadow shadow-[inset_0px_-1px_0px_0px_var(--layers-elevation-highlight)]">
+          <div className="absolute inset-0 pointer-events-none bg-layers-surface-lowered-1 rounded-[4px]" />
+          {tabs.map((tab) => {
+            const active = activeTab === tab.id;
+            return (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`relative flex items-center justify-center px-3 py-1 ${
+                  active ? "rounded-[2px]" : "rounded-[4px]"
+                }`}
+              >
+                {active && (
+                  <>
+                    <div className="absolute inset-0 pointer-events-none bg-brand-primary-purple rounded-[2px] border-t border-brand-purple-8" />
+                    <div className="absolute inset-0 pointer-events-none rounded-[inherit] shadow-[inset_0px_-1px_0px_0px_var(--brand-purple-10)]" />
+                  </>
+                )}
+                <span
+                  className={`relative text-sm leading-[20px] whitespace-nowrap ${
+                    active ? "text-white" : "text-text-secondary"
+                  }`}
+                >
+                  {tab.label}
+                </span>
+              </button>
+            );
+          })}
         </div>
+        <div className="absolute inset-0 pointer-events-none rounded-[inherit] shadow-[inset_0px_-1px_0px_0px_var(--layers-elevation-shadow)]" />
       </div>
 
       {/* Tab content */}
