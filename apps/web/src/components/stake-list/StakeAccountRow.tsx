@@ -2,7 +2,7 @@
 
 import { cn } from "@/lib/utils";
 import { StateBadge } from "@/components/ui/badge";
-import type { StakeAccount } from "pye-stake-utils";
+import type { StakeAccount } from "@/lib/types";
 
 const LAMPORTS_PER_SOL = 1_000_000_000;
 
@@ -68,6 +68,9 @@ export default function StakeAccountRow({ account, selected, onSelect }: Props) 
       <div className="flex-1 min-w-0 flex items-center gap-2">
         <span className="text-sm text-text-primary leading-5 truncate">
           {account.validatorName}
+        </span>
+        <span className="text-xs text-text-secondary shrink-0" style={monoStyle}>
+          {account.pubkey.slice(0, 4)}
         </span>
         <StateBadge state={account.state} />
       </div>

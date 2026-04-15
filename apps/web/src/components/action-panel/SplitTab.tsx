@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useWallet, useConnection } from "@solana/wallet-adapter-react";
 import { useWalletModal } from "@solana/wallet-adapter-react-ui";
 import { PublicKey } from "@solana/web3.js";
-import { buildSplitStakeTransaction } from "pye-stake-utils";
+import { buildSplitStakeTransaction } from "@/lib/stake-ops";
 import { useWalletStore } from "@/store/wallet-provider";
 import { useStakeStore } from "@/store/stake-provider";
 import { useUIStore } from "@/store/ui-provider";

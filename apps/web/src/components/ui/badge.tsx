@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import type { StakeAccountState } from "pye-stake-utils";
+import type { StakeAccountState } from "@/lib/types";
 
 const stateStyles: Record<StakeAccountState, string> = {
   active:

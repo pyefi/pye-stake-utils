@@ -7,7 +7,7 @@ import { PublicKey } from "@solana/web3.js";
 import {
   buildTransferStakeAuthorityTransaction,
   buildTransferWithdrawAuthorityTransaction,
-} from "pye-stake-utils";
+} from "@/lib/stake-ops";
 import { useWalletStore } from "@/store/wallet-provider";
 import { useStakeStore } from "@/store/stake-provider";
 import { useUIStore } from "@/store/ui-provider";
