@@ -5,6 +5,7 @@ import { useConnection } from "@solana/wallet-adapter-react";
 import { PublicKey } from "@solana/web3.js";
 import { useWalletStore } from "@/store/wallet-provider";
 import { useStakeStore } from "@/store/stake-provider";
+import { fetchValidatorMap } from "@/lib/fetch-validator-map";
 
 export default function StakeSyncer() {
   const { connection } = useConnection();
@@ -15,7 +16,11 @@ export default function StakeSyncer() {
 
   useEffect(() => {
     if (walletStatus === "connected" && publicKey) {
-      refresh(connection, new PublicKey(publicKey));
+      const load = async () => {
+        const validatorMap = await fetchValidatorMap();
+        refresh(connection, new PublicKey(publicKey), validatorMap);
+      };
+      load();
     } else if (walletStatus === "disconnected") {
       reset();
     }

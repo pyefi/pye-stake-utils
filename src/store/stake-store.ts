@@ -1,7 +1,7 @@
 import { createStore } from "zustand/vanilla";
 import { Connection, PublicKey } from "@solana/web3.js";
-import { fetchStakeAccounts } from "../lib/fetch-stake-accounts.js";
-import type { StakeAccount } from "../types/index.js";
+import { fetchStakeAccounts } from "../lib/fetch-stake-accounts";
+import type { StakeAccount } from "../types/index";
 
 export interface StakeState {
   stakeAccounts: StakeAccount[];

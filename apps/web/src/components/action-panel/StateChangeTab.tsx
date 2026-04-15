@@ -87,13 +87,50 @@ export default function StateChangeTab() {
 
   if (walletStatus !== "connected") {
     return (
-      <div className="flex flex-col gap-4">
-        <p className="text-sm text-text-secondary">
-          Connect your wallet to manage stake account state.
-        </p>
-        <Button onClick={() => setVisible(true)} className="w-full" size="lg">
-          Connect wallet
-        </Button>
+      <div className="flex-1 flex flex-col">
+        <div className="opacity-50 pointer-events-none flex-1 flex flex-col justify-between gap-4">
+          {/* Mock: top section */}
+          <div className="flex flex-col gap-4">
+            {/* Mock: selected account summary */}
+            <div className="flex flex-col gap-1.5">
+              <span className="text-xs text-text-secondary eyebrow-xs">Selected Account</span>
+              <div className="flex items-center gap-3 p-3 rounded-[6px] bg-layers-surface-raised-1 border-t border-layers-elevation-highlight shadow-[inset_0px_-1px_0px_0px_var(--layers-elevation-shadow)]">
+                <div className="size-8 rounded-full bg-layers-surface-lowered-2 border border-layers-elevation-shadow flex items-center justify-center shrink-0">
+                  <span className="text-xs text-text-secondary">He</span>
+                </div>
+                <div className="flex-1 min-w-0 flex items-center gap-2">
+                  <span className="text-sm text-text-primary truncate">Helius</span>
+                  <StateBadge state="active" />
+                </div>
+                <span className="text-sm text-text-primary shrink-0" style={monoStyle}>
+                  142.50 SOL
+                </span>
+              </div>
+            </div>
+
+            {/* Mock: action description */}
+            <div className="flex flex-col gap-3">
+              <span className="text-xs text-text-secondary eyebrow-xs">Action</span>
+              <p className="text-sm text-text-secondary">
+                This account is{" "}
+                <span className="font-semibold text-text-primary">active</span> and
+                currently earning rewards. Deactivating begins a cooldown before funds
+                become withdrawable.
+              </p>
+            </div>
+          </div>
+
+          {/* Mock: bottom section */}
+          <div className="flex flex-col gap-3">
+            <div className="p-3 rounded-[6px] bg-layers-surface-lowered-1 border-t border-layers-elevation-shadow shadow-[inset_0px_-1px_0px_0px_var(--layers-elevation-highlight)] text-xs text-text-secondary">
+              {EPOCH_ALERT}
+            </div>
+            <Button variant="destructive" size="lg" className="w-full" disabled>
+              Deactivate Stake
+            </Button>
+          </div>
+        </div>
+
       </div>
     );
   }

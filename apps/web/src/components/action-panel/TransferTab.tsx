@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useWallet, useConnection } from "@solana/wallet-adapter-react";
+import { useWalletModal } from "@solana/wallet-adapter-react-ui";
 import { PublicKey } from "@solana/web3.js";
 import {
   buildTransferStakeAuthorityTransaction,
@@ -38,6 +39,7 @@ export default function TransferTab() {
   const { sendTransaction } = useWallet();
   const { connection } = useConnection();
 
+  const { setVisible } = useWalletModal();
   const walletStatus = useWalletStore((s) => s.status);
   const publicKey = useWalletStore((s) => s.publicKey);
 
@@ -92,9 +94,48 @@ export default function TransferTab() {
 
   if (walletStatus !== "connected") {
     return (
-      <p className="text-sm text-text-secondary">
-        Connect your wallet to transfer authority.
-      </p>
+      <div className="flex-1 flex flex-col">
+        <div className="opacity-50 pointer-events-none flex-1 flex flex-col justify-between gap-4">
+          {/* Mock: top section */}
+          <div className="flex flex-col gap-4">
+            {/* Mock: authority type selector */}
+            <div className="flex flex-col gap-1.5">
+              <label className="text-xs text-text-secondary eyebrow-xs">Authority Type</label>
+              <div className="flex gap-2">
+                <div className="flex-1 h-9 rounded-[4px] text-sm border-t bg-layers-surface-lowered-2 border-layers-elevation-shadow text-text-primary shadow-[inset_0px_-1px_0px_0px_var(--layers-elevation-highlight)] flex items-center justify-center">
+                  Staker Authority
+                </div>
+                <div className="flex-1 h-9 rounded-[4px] text-sm border-t bg-layers-surface-raised-1 border-layers-elevation-highlight text-text-secondary shadow-[inset_0px_-1px_0px_0px_var(--layers-elevation-shadow)] flex items-center justify-center">
+                  Withdraw Authority
+                </div>
+              </div>
+              <p className="text-xs text-text-secondary">
+                {AUTHORITY_DESCRIPTIONS.stake}
+              </p>
+            </div>
+
+            {/* Mock: address input */}
+            <div className="flex flex-col gap-1.5">
+              <label className="text-xs text-text-secondary eyebrow-xs">New Authority Address</label>
+              <div className="h-11 px-3 rounded-[6px] bg-layers-surface-lowered-1 border-t border-layers-elevation-shadow shadow-[inset_0px_-1px_0px_0px_var(--layers-elevation-highlight)] flex items-center">
+                <span className="text-sm text-text-secondary">Enter Solana address</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Mock: bottom section */}
+          <div className="flex flex-col gap-3">
+            <div className="p-3 rounded-[6px] bg-[rgba(229,72,77,0.08)] border border-[rgba(229,72,77,0.25)] text-xs text-text-secondary">
+              This action is irreversible. Make sure the new authority address is
+              correct before confirming.
+            </div>
+            <Button size="lg" className="w-full" disabled>
+              Transfer Staker Authority
+            </Button>
+          </div>
+        </div>
+
+      </div>
     );
   }
 

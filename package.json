@@ -6,6 +6,7 @@
   "type": "module",
   "main": "src/index.ts",
   "scripts": {
+    "dev": "pnpm --filter stake-utils-web dev",
     "build": "tsc",
     "typecheck": "tsc --noEmit"
   },

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useWallet, useConnection } from "@solana/wallet-adapter-react";
+import { useWalletModal } from "@solana/wallet-adapter-react-ui";
 import { PublicKey } from "@solana/web3.js";
 import { buildSplitStakeTransaction } from "pye-stake-utils";
 import { useWalletStore } from "@/store/wallet-provider";
@@ -17,6 +18,7 @@ export default function SplitTab() {
   const { sendTransaction } = useWallet();
   const { connection } = useConnection();
 
+  const { setVisible } = useWalletModal();
   const publicKey = useWalletStore((s) => s.publicKey);
   const walletStatus = useWalletStore((s) => s.status);
 
@@ -46,9 +48,64 @@ export default function SplitTab() {
 
   if (walletStatus !== "connected") {
     return (
-      <p className="text-sm text-text-secondary">
-        Connect your wallet to split a stake account.
-      </p>
+      <div className="flex-1 flex flex-col">
+        <div className="opacity-50 pointer-events-none flex-1 flex flex-col justify-between gap-4">
+          {/* Mock: top section */}
+          <div className="flex flex-col gap-4">
+            {/* Mock: SOL input */}
+            <div className="flex flex-col gap-1.5">
+              <label className="text-sm text-text-primary">
+                How much SOL goes into the new account?
+              </label>
+              <div className="relative flex items-center h-11 px-3 rounded-[6px] bg-layers-surface-lowered-1 border-t border-layers-elevation-shadow shadow-[inset_0px_-1px_0px_0px_var(--layers-elevation-highlight)]">
+                <span className="flex-1 text-sm text-text-primary" style={monoStyle}>25</span>
+                <span className="text-sm text-text-secondary shrink-0" style={monoStyle}>SOL</span>
+              </div>
+            </div>
+
+            {/* Mock: resulting accounts */}
+            <div className="flex flex-col gap-2">
+              <span className="text-xs text-text-secondary eyebrow-xs">Resulting Accounts</span>
+
+              {/* Original account */}
+              <div className="flex items-center gap-3 px-3 py-2.5 rounded-[6px] bg-layers-surface-raised-1 border-t border-layers-elevation-highlight shadow-[inset_0px_-1px_0px_0px_var(--layers-elevation-shadow)]">
+                <div className="size-7 rounded-full bg-layers-surface-lowered-2 border border-layers-elevation-shadow flex items-center justify-center shrink-0">
+                  <span className="text-[10px] text-text-secondary">He</span>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="text-sm text-text-primary truncate">Helius</div>
+                  <div className="text-xs text-text-secondary">Original account</div>
+                </div>
+                <span className="text-sm text-text-primary shrink-0" style={monoStyle}>117.5000 SOL</span>
+              </div>
+
+              {/* New account */}
+              <div className="flex items-center gap-3 px-3 py-2.5 rounded-[6px] bg-layers-surface-raised-1 border-t border-layers-elevation-highlight shadow-[inset_0px_-1px_0px_0px_var(--layers-elevation-shadow)]">
+                <div className="size-7 rounded-full bg-layers-surface-lowered-2 border border-layers-elevation-shadow flex items-center justify-center shrink-0">
+                  <span className="text-[10px] text-text-secondary">He</span>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="text-sm text-text-primary truncate">Helius</div>
+                  <div className="text-xs text-brand-action-green">New account</div>
+                </div>
+                <span className="text-sm text-text-primary shrink-0" style={monoStyle}>25.0000 SOL</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Mock: bottom section */}
+          <div className="flex flex-col gap-3">
+            <div className="p-3 rounded-[6px] bg-layers-surface-lowered-1 border-t border-layers-elevation-shadow shadow-[inset_0px_-1px_0px_0px_var(--layers-elevation-highlight)] text-xs text-text-secondary">
+              Both accounts inherit the same validator and activation status. A new
+              stake account address is generated for the split portion.
+            </div>
+            <Button size="lg" className="w-full" disabled>
+              Confirm Split
+            </Button>
+          </div>
+        </div>
+
+      </div>
     );
   }
 

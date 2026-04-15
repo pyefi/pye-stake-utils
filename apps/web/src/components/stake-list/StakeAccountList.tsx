@@ -2,9 +2,11 @@
 
 import { useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useWalletModal } from "@solana/wallet-adapter-react-ui";
 import { useStakeStore } from "@/store/stake-provider";
 import { useUIStore } from "@/store/ui-provider";
 import { useWalletStore } from "@/store/wallet-provider";
+import { Button } from "@/components/ui/button";
 import StakeAccountRow from "./StakeAccountRow";
 
 const PAGE_SIZE = 8;
@@ -15,6 +17,7 @@ export default function StakeAccountList() {
   const selectedPubkey = useUIStore((s) => s.selectedAccountPubkey);
   const selectAccount = useUIStore((s) => s.selectAccount);
   const walletStatus = useWalletStore((s) => s.status);
+  const { setVisible } = useWalletModal();
 
   const [page, setPage] = useState(0);
 
@@ -27,7 +30,7 @@ export default function StakeAccountList() {
     <div className="flex flex-col h-full bg-layers-surface-default rounded-[6px] overflow-hidden shadow-[0px_4px_8px_0px_rgba(0,0,0,0.07)] border-t border-layers-elevation-highlight">
       {/* Panel header */}
       <div className="flex items-center px-4 h-[60px] shrink-0 border-b border-layers-elevation-shadow">
-        <span className="text-xs text-text-secondary eyebrow-xs">Stake Account Selection</span>
+        <span className="text-xs text-text-secondary eyebrow-xs">Select your stake</span>
       </div>
 
       {/* Column headers */}
@@ -37,10 +40,15 @@ export default function StakeAccountList() {
       </div>
 
       {/* Account rows */}
-      <div className="flex-1 overflow-y-auto">
+      <div className="flex-1 min-h-0 flex flex-col overflow-y-auto">
         {walletStatus === "disconnected" && (
-          <div className="flex items-center justify-center h-32 text-sm text-text-secondary">
-            Connect your wallet to view stake accounts
+          <div className="flex-1 flex flex-col items-center justify-center gap-6">
+            <p className="text-sm text-text-secondary">
+              Connect your wallet to view stake accounts
+            </p>
+            <Button onClick={() => setVisible(true)} size="lg">
+              Connect wallet
+            </Button>
           </div>
         )}
         {walletStatus !== "disconnected" && loading && (
@@ -63,11 +71,16 @@ export default function StakeAccountList() {
             onSelect={selectAccount}
           />
         ))}
+        {/* Filler row to fill remaining space with elevation */}
+        {walletStatus !== "disconnected" && (
+          <div className="flex-1 border-t border-layers-elevation-highlight shadow-[inset_0px_-1px_0px_0px_var(--layers-elevation-shadow)] bg-layers-surface-default" />
+        )}
       </div>
 
       {/* Pagination */}
       {stakeAccounts.length > 0 && (
-        <div className="flex items-center h-[48px] shrink-0 border-t border-layers-elevation-shadow">
+        <div className="relative flex items-center h-[48px] shrink-0 border-t border-layers-elevation-highlight">
+          <div className="absolute inset-0 pointer-events-none rounded-b-[6px] shadow-[inset_0px_-1px_0px_0px_var(--layers-elevation-shadow)]" />
           <button
             onClick={() => setPage((p) => Math.max(0, p - 1))}
             disabled={page === 0}

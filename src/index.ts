@@ -4,7 +4,7 @@ export type {
   StakeAccountState,
   Validator,
   ValidatorId,
-} from "./types/index.js";
+} from "./types/index";
 
 // Constants
 export {
@@ -13,18 +13,18 @@ export {
   SYSVAR_RENT,
   SYSVAR_STAKE_HISTORY,
   STAKE_CONFIG,
-} from "./constants/index.js";
+} from "./constants/index";
 
 // Store
-export { createStakeStore } from "./store/index.js";
-export type { StakeStore, StakeState, StakeActions } from "./store/index.js";
+export { createStakeStore } from "./store/index";
+export type { StakeStore, StakeState, StakeActions } from "./store/index";
 
 // Lib — stake operations
-export { fetchStakeAccounts } from "./lib/fetch-stake-accounts.js";
-export { buildDelegateStakeTransaction } from "./lib/delegate-stake.js";
-export { buildSplitStakeTransaction } from "./lib/split-stake.js";
-export { buildMergeStakeTransaction } from "./lib/merge-stake.js";
-export { buildTransferWithdrawAuthorityTransaction } from "./lib/transfer-withdraw-authority.js";
-export { buildTransferStakeAuthorityTransaction } from "./lib/transfer-stake-authority.js";
-export { buildDeactivateStakeTransaction } from "./lib/deactivate-stake.js";
-export { buildWithdrawStakeTransaction } from "./lib/withdraw-stake.js";
+export { fetchStakeAccounts } from "./lib/fetch-stake-accounts";
+export { buildDelegateStakeTransaction } from "./lib/delegate-stake";
+export { buildSplitStakeTransaction } from "./lib/split-stake";
+export { buildMergeStakeTransaction } from "./lib/merge-stake";
+export { buildTransferWithdrawAuthorityTransaction } from "./lib/transfer-withdraw-authority";
+export { buildTransferStakeAuthorityTransaction } from "./lib/transfer-stake-authority";
+export { buildDeactivateStakeTransaction } from "./lib/deactivate-stake";
+export { buildWithdrawStakeTransaction } from "./lib/withdraw-stake";
