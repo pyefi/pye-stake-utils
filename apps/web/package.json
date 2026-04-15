@@ -23,7 +23,6 @@
     "lucide-react": "^0.563.0",
     "motion": "^12.34.3",
     "next": "16.2.2",
-    "pye-stake-utils": "file:../..",
     "radix-ui": "^1.4.3",
     "react": "19.2.3",
     "react-dom": "19.2.3",
