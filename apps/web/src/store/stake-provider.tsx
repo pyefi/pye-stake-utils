@@ -7,8 +7,8 @@ import {
   type ReactNode,
 } from "react";
 import { useStore } from "zustand";
-import { createStakeStore } from "pye-stake-utils";
-import type { StakeStore } from "pye-stake-utils";
+import { createStakeStore } from "@/store/stake-store";
+import type { StakeStore } from "@/store/stake-store";
 
 type StakeStoreApi = ReturnType<typeof createStakeStore>;
 const StakeStoreContext = createContext<StakeStoreApi | null>(null);
