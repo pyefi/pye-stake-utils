@@ -8,6 +8,7 @@ import {
   buildTransferStakeAuthorityTransaction,
   buildTransferWithdrawAuthorityTransaction,
 } from "@/lib/stake-ops";
+import { shortenAddress } from "@/lib/format";
 import { useWalletStore } from "@/store/wallet-provider";
 import { useStakeStore } from "@/store/stake-provider";
 import { useUIStore } from "@/store/ui-provider";
@@ -20,6 +21,11 @@ interface AuthorityOwnership {
   staker: { isYou: boolean; address: string };
   withdraw: { isYou: boolean; address: string };
 }
+
+const monoStyle = {
+  fontFeatureSettings:
+    "'cv01' 1,'cv02' 1,'cv03' 1,'cv04' 1,'zero' 1,'lnum' 1,'tnum' 1",
+} as const;
 
 function getMockAuthority(publicKey: string): AuthorityOwnership {
   return {
@@ -81,8 +87,62 @@ function AuthorityCheckbox({ checked }: { checked: boolean }) {
   );
 }
 
-function truncateAddress(address: string) {
-  return `${address.slice(0, 4)}...${address.slice(-4)}`;
+function AuthorityRow({
+  label,
+  description,
+  isYou,
+  address,
+  checked,
+  onToggle,
+  isLast,
+}: {
+  label: string;
+  description: string;
+  isYou: boolean;
+  address: string;
+  checked: boolean;
+  onToggle: () => void;
+  isLast: boolean;
+}) {
+  const positionClasses = isLast
+    ? "border-t border-layers-elevation-shadow rounded-b-[6px]"
+    : "";
+
+  if (isYou) {
+    return (
+      <button
+        type="button"
+        onClick={onToggle}
+        className={`w-full flex items-start gap-2 p-[10px] bg-layers-surface-lowered-1 shadow-[inset_0px_-1px_0px_0px_var(--layers-elevation-highlight)] text-left ${positionClasses}`}
+      >
+        <AuthorityCheckbox checked={checked} />
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center justify-between">
+            <span className="text-xs text-text-primary">{label}</span>
+            <span className="text-[10px] font-mono text-brand-action-green">You</span>
+          </div>
+          <p className="text-[10px] text-text-secondary mt-0.5">{description}</p>
+        </div>
+      </button>
+    );
+  }
+
+  return (
+    <div className={`flex items-start gap-2 p-[10px] bg-layers-surface-lowered-1 shadow-[inset_0px_-1px_0px_0px_var(--layers-elevation-highlight)] opacity-55 ${positionClasses}`}>
+      <div className="size-4 flex-shrink-0 flex items-center justify-center mt-[1px]">
+        <LockIcon />
+      </div>
+      <div className="flex-1 min-w-0">
+        <div className="flex items-center justify-between">
+          <span className="text-xs text-text-primary">{label}</span>
+          <span className="text-[10px] font-mono text-text-disabled">
+            {shortenAddress(address)}
+          </span>
+        </div>
+        <p className="text-[10px] text-text-secondary mt-0.5">{description}</p>
+      </div>
+    </div>
+  );
 }
 
 function isValidPublicKey(key: string): boolean {
@@ -123,9 +183,6 @@ export default function TransferTab() {
 
   const authority = publicKey ? getMockAuthority(publicKey) : null;
 
-  const bothChecked = stakeChecked && withdrawChecked;
-  const noneChecked = !stakeChecked && !withdrawChecked;
-
   const selectedTypes: AuthorityType[] = [];
   if (stakeChecked && authority?.staker.isYou) selectedTypes.push("stake");
   if (withdrawChecked && authority?.withdraw.isYou) selectedTypes.push("withdraw");
@@ -164,41 +221,32 @@ export default function TransferTab() {
     }
   };
 
-  const monoStyle = {
-    fontFeatureSettings:
-      "'cv01' 1,'cv02' 1,'cv03' 1,'cv04' 1,'zero' 1,'lnum' 1,'tnum' 1",
-  } as const;
-
   if (walletStatus !== "connected") {
     return (
       <div className="flex-1 flex flex-col">
         <div className="opacity-50 pointer-events-none flex-1 flex flex-col justify-between gap-4">
-          {/* Mock: authority card */}
           <div className="flex flex-col gap-4">
             <div className="rounded-[6px] border-t border-layers-elevation-shadow shadow-[inset_0px_-1px_0px_0px_var(--layers-elevation-highlight)] overflow-hidden">
-              <div className="flex items-start gap-2 p-[10px] bg-layers-surface-lowered-1 shadow-[inset_0px_-1px_0px_0px_var(--layers-elevation-highlight)]">
-                <AuthorityCheckbox checked={true} />
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs text-text-primary">Staker Authority</span>
-                    <span className="text-[10px] font-mono text-brand-action-green">You</span>
-                  </div>
-                  <p className="text-[10px] text-text-secondary mt-0.5">Can delegate and deactivate</p>
-                </div>
-              </div>
-              <div className="flex items-start gap-2 p-[10px] bg-layers-surface-lowered-1 border-t border-layers-elevation-shadow rounded-b-[6px] shadow-[inset_0px_-1px_0px_0px_var(--layers-elevation-highlight)]">
-                <AuthorityCheckbox checked={true} />
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs text-text-primary">Withdraw Authority</span>
-                    <span className="text-[10px] font-mono text-brand-action-green">You</span>
-                  </div>
-                  <p className="text-[10px] text-text-secondary mt-0.5">Can withdraw when inactive</p>
-                </div>
-              </div>
+              <AuthorityRow
+                label="Staker Authority"
+                description="Can delegate and deactivate"
+                isYou={true}
+                address=""
+                checked={true}
+                onToggle={() => {}}
+                isLast={false}
+              />
+              <AuthorityRow
+                label="Withdraw Authority"
+                description="Can withdraw when inactive"
+                isYou={true}
+                address=""
+                checked={true}
+                onToggle={() => {}}
+                isLast={true}
+              />
             </div>
 
-            {/* Mock: address input */}
             <div className="flex flex-col gap-1.5">
               <label className="text-xs text-text-secondary eyebrow-xs">New Authority Address</label>
               <div className="h-11 px-3 rounded-[6px] bg-layers-surface-lowered-1 border-t border-layers-elevation-shadow shadow-[inset_0px_-1px_0px_0px_var(--layers-elevation-highlight)] flex items-center">
@@ -207,7 +255,6 @@ export default function TransferTab() {
             </div>
           </div>
 
-          {/* Mock: bottom section */}
           <div className="flex flex-col gap-3">
             <div className="p-3 rounded-[6px] bg-[rgba(229,72,77,0.08)] border border-[rgba(229,72,77,0.25)] text-xs text-text-secondary">
               This action is irreversible. Both authorities will be transferred.
@@ -232,83 +279,33 @@ export default function TransferTab() {
   return (
     <div className="flex-1 flex flex-col justify-between gap-4">
       <div className="flex flex-col gap-3">
-        {/* Merged authority card */}
         <div className="rounded-[6px] border-t border-layers-elevation-shadow shadow-[inset_0px_-1px_0px_0px_var(--layers-elevation-highlight)] overflow-hidden">
-          {/* Staker row */}
-          {authority?.staker.isYou ? (
-            <button
-              type="button"
-              onClick={() => setStakeChecked((c) => !c)}
-              className="w-full flex items-start gap-2 p-[10px] bg-layers-surface-lowered-1 shadow-[inset_0px_-1px_0px_0px_var(--layers-elevation-highlight)] text-left"
-            >
-              <AuthorityCheckbox checked={stakeChecked} />
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs text-text-primary">Staker Authority</span>
-                  <span className="text-[10px] font-mono text-brand-action-green">You</span>
-                </div>
-                <p className="text-[10px] text-text-secondary mt-0.5">Can delegate and deactivate</p>
-              </div>
-            </button>
-          ) : (
-            <div className="flex items-start gap-2 p-[10px] bg-layers-surface-lowered-1 shadow-[inset_0px_-1px_0px_0px_var(--layers-elevation-highlight)] opacity-55">
-              <div className="size-4 flex-shrink-0 flex items-center justify-center mt-[1px]">
-                <LockIcon />
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs text-text-primary">Staker Authority</span>
-                  <span className="text-[10px] font-mono text-text-disabled">
-                    {truncateAddress(authority?.staker.address ?? "")}
-                  </span>
-                </div>
-                <p className="text-[10px] text-text-secondary mt-0.5">Can delegate and deactivate</p>
-              </div>
-            </div>
-          )}
-
-          {/* Withdraw row */}
-          {authority?.withdraw.isYou ? (
-            <button
-              type="button"
-              onClick={() => setWithdrawChecked((c) => !c)}
-              className="w-full flex items-start gap-2 p-[10px] bg-layers-surface-lowered-1 border-t border-layers-elevation-shadow rounded-b-[6px] shadow-[inset_0px_-1px_0px_0px_var(--layers-elevation-highlight)] text-left"
-            >
-              <AuthorityCheckbox checked={withdrawChecked} />
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs text-text-primary">Withdraw Authority</span>
-                  <span className="text-[10px] font-mono text-brand-action-green">You</span>
-                </div>
-                <p className="text-[10px] text-text-secondary mt-0.5">Can withdraw when inactive</p>
-              </div>
-            </button>
-          ) : (
-            <div className="flex items-start gap-2 p-[10px] bg-layers-surface-lowered-1 border-t border-layers-elevation-shadow rounded-b-[6px] shadow-[inset_0px_-1px_0px_0px_var(--layers-elevation-highlight)] opacity-55">
-              <div className="size-4 flex-shrink-0 flex items-center justify-center mt-[1px]">
-                <LockIcon />
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs text-text-primary">Withdraw Authority</span>
-                  <span className="text-[10px] font-mono text-text-disabled">
-                    {truncateAddress(authority?.withdraw.address ?? "")}
-                  </span>
-                </div>
-                <p className="text-[10px] text-text-secondary mt-0.5">Can withdraw when inactive</p>
-              </div>
-            </div>
-          )}
+          <AuthorityRow
+            label="Staker Authority"
+            description="Can delegate and deactivate"
+            isYou={authority?.staker.isYou ?? false}
+            address={authority?.staker.address ?? ""}
+            checked={stakeChecked}
+            onToggle={() => setStakeChecked((c) => !c)}
+            isLast={false}
+          />
+          <AuthorityRow
+            label="Withdraw Authority"
+            description="Can withdraw when inactive"
+            isYou={authority?.withdraw.isYou ?? false}
+            address={authority?.withdraw.address ?? ""}
+            checked={withdrawChecked}
+            onToggle={() => setWithdrawChecked((c) => !c)}
+            isLast={true}
+          />
         </div>
 
-        {/* Bundle note */}
-        {bothChecked && authority?.staker.isYou && authority?.withdraw.isYou && (
+        {selectedTypes.length === 2 && (
           <div className="px-[10px] py-1.5 rounded-[6px] bg-[rgba(154,77,255,0.1)] border border-[rgba(154,77,255,0.25)] text-[11px] text-[#b78eff]">
             Both selected — bundled into a single transaction.
           </div>
         )}
 
-        {/* New authority address input */}
         <div className="flex flex-col gap-1.5">
           <label className="text-xs text-text-secondary eyebrow-xs">
             New Authority Address
@@ -329,16 +326,13 @@ export default function TransferTab() {
         </div>
       </div>
 
-      {/* Bottom section */}
       <div className="flex flex-col gap-3">
-        {/* Warning */}
         <div className="p-3 rounded-[6px] bg-[rgba(229,72,77,0.08)] border border-[rgba(229,72,77,0.25)] text-xs text-text-secondary">
           {selectedTypes.length === 2
             ? "This action is irreversible. Both authorities will be transferred."
             : "This action is irreversible. Make sure the new authority address is correct before confirming."}
         </div>
 
-        {/* Tx feedback */}
         {txStatus === "success" && txSignature && (
           <div className="p-3 rounded-[6px] bg-[rgba(13,156,94,0.1)] border border-[rgba(13,156,94,0.3)] text-xs text-brand-action-green flex flex-col gap-1">
             <span className="font-semibold">Transfer confirmed</span>
@@ -365,12 +359,11 @@ export default function TransferTab() {
           </div>
         )}
 
-        {/* CTA */}
         <Button
           size="lg"
           className="w-full"
           onClick={handleTransfer}
-          disabled={!addressValid || noneChecked || txStatus === "pending"}
+          disabled={!addressValid || selectedTypes.length === 0 || txStatus === "pending"}
         >
           {txStatus === "pending" ? "Transferring..." : ctaLabel}
         </Button>
