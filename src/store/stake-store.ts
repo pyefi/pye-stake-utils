@@ -8,6 +8,7 @@ export interface StakeState {
   loading: boolean;
   error: string | null;
   lastFetchedAt: number | null;
+  validatorMap: Map<string, { name: string; icon: string }> | null;
 }
 
 export interface StakeActions {
@@ -29,6 +30,7 @@ const initialState: StakeState = {
   loading: false,
   error: null,
   lastFetchedAt: null,
+  validatorMap: null,
 };
 
 export function createStakeStore() {
@@ -48,12 +50,18 @@ export function createStakeStore() {
     },
 
     async refresh(connection, owner, validatorMap) {
+      const resolvedMap = validatorMap ?? get().validatorMap ?? undefined;
       if (get().stakeAccounts.length === 0) {
         set({ loading: true });
       }
       try {
-        const accounts = await fetchStakeAccounts(connection, owner, validatorMap);
-        set({ stakeAccounts: accounts, error: null, lastFetchedAt: Date.now() });
+        const accounts = await fetchStakeAccounts(connection, owner, resolvedMap);
+        set({
+          stakeAccounts: accounts,
+          error: null,
+          lastFetchedAt: Date.now(),
+          ...(validatorMap ? { validatorMap } : {}),
+        });
       } catch (err) {
         set({ error: err instanceof Error ? err.message : String(err) });
       } finally {

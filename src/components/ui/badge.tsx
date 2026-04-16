@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import type { StakeAccountState } from "@/lib/types";
+import type { StakeAccountState, StakeAuthority } from "@/lib/types";
 
 const stateStyles: Record<StakeAccountState, string> = {
   active:
@@ -18,6 +18,38 @@ const stateLabels: Record<StakeAccountState, string> = {
   deactivating: "Deactivating",
   inactive: "Inactive",
 };
+
+const authorityStyles: Record<StakeAuthority, string> = {
+  staker:
+    "bg-[rgba(140,51,255,0.15)] text-brand-primary-purple border-t border-[rgba(255,255,255,0.2)] shadow-[inset_0px_-1px_0px_0px_rgba(0,0,0,0.1)]",
+  withdrawer:
+    "bg-[rgba(99,179,237,0.15)] text-[#2b7cb8] dark:text-[#63b3ed] border-t border-[rgba(255,255,255,0.2)] shadow-[inset_0px_-1px_0px_0px_rgba(0,0,0,0.1)]",
+};
+
+const authorityLabels: Record<StakeAuthority, string> = {
+  staker: "Staker",
+  withdrawer: "Withdraw",
+};
+
+export function AuthorityBadge({
+  authority,
+  className,
+}: {
+  authority: StakeAuthority;
+  className?: string;
+}) {
+  return (
+    <span
+      className={cn(
+        "inline-flex items-center h-[22px] px-1 py-0.5 rounded-[4px] text-xs font-normal",
+        authorityStyles[authority],
+        className,
+      )}
+    >
+      {authorityLabels[authority]}
+    </span>
+  );
+}
 
 export function StateBadge({
   state,
