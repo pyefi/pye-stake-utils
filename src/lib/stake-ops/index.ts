@@ -13,3 +13,5 @@ export { buildTransferStakeAuthorityTransaction } from "./transfer-stake-authori
 export type { TransferStakeAuthorityParams, TransferStakeAuthorityResult } from "./transfer-stake-authority";
 export { buildTransferWithdrawAuthorityTransaction } from "./transfer-withdraw-authority";
 export type { TransferWithdrawAuthorityParams, TransferWithdrawAuthorityResult } from "./transfer-withdraw-authority";
+export { buildTransferBothAuthoritiesTransaction } from "./transfer-both-authorities";
+export type { TransferBothAuthoritiesParams, TransferBothAuthoritiesResult } from "./transfer-both-authorities";
