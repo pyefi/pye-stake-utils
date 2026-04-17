@@ -5,6 +5,7 @@ import { useConnection } from "@solana/wallet-adapter-react";
 import { PublicKey } from "@solana/web3.js";
 import { useWalletStore } from "@/store/wallet-provider";
 import { useStakeStore } from "@/store/stake-provider";
+import { useUIStore } from "@/store/ui-provider";
 import { fetchValidatorMap } from "@/lib/fetch-validator-map";
 
 export default function StakeSyncer() {
@@ -13,6 +14,10 @@ export default function StakeSyncer() {
   const publicKey = useWalletStore((s) => s.publicKey);
   const refresh = useStakeStore((s) => s.refresh);
   const reset = useStakeStore((s) => s.reset);
+  const stakeAccounts = useStakeStore((s) => s.stakeAccounts);
+  const lastFetchedAt = useStakeStore((s) => s.lastFetchedAt);
+  const selectedAccountPubkey = useUIStore((s) => s.selectedAccountPubkey);
+  const selectAccount = useUIStore((s) => s.selectAccount);
 
   useEffect(() => {
     if (walletStatus === "connected" && publicKey) {
@@ -25,6 +30,18 @@ export default function StakeSyncer() {
       reset();
     }
   }, [walletStatus, publicKey]);
+
+  // After every fetch, deselect if the selected account is no longer accessible
+  // (e.g. both authorities were transferred away to another wallet)
+  useEffect(() => {
+    if (
+      lastFetchedAt !== null &&
+      selectedAccountPubkey &&
+      !stakeAccounts.some((a) => a.pubkey === selectedAccountPubkey)
+    ) {
+      selectAccount(null);
+    }
+  }, [lastFetchedAt]);
 
   return null;
 }

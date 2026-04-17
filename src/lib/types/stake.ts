@@ -4,6 +4,8 @@ export type StakeAccountState =
   | "deactivating"
   | "inactive";
 
+export type StakeAuthority = "staker" | "withdrawer";
+
 export interface StakeAccount {
   pubkey: string;
   validatorVoteAccount: string;
@@ -11,4 +13,5 @@ export interface StakeAccount {
   validatorIcon: string;
   lamports: number;
   state: StakeAccountState;
+  authorities: StakeAuthority[];
 }

@@ -1,6 +1,6 @@
 import { Connection, PublicKey } from "@solana/web3.js";
 import { STAKE_PROGRAM_ID } from "@/lib/stake-constants";
-import type { StakeAccount, StakeAccountState } from "@/lib/types";
+import type { StakeAccount, StakeAccountState, StakeAuthority } from "@/lib/types";
 
 export async function fetchStakeAccounts(
   connection: Connection,
@@ -17,6 +17,17 @@ export async function fetchStakeAccounts(
     }),
     connection.getEpochInfo(),
   ]);
+
+  const authoritiesMap = new Map<string, StakeAuthority[]>();
+  for (const a of stakerAccounts) {
+    authoritiesMap.set(a.pubkey.toBase58(), ["staker"]);
+  }
+  for (const a of withdrawerAccounts) {
+    const key = a.pubkey.toBase58();
+    const existing = authoritiesMap.get(key);
+    if (existing) existing.push("withdrawer");
+    else authoritiesMap.set(key, ["withdrawer"]);
+  }
 
   const seen = new Map([
     ...stakerAccounts.map((a) => [a.pubkey.toBase58(), a] as const),
@@ -74,6 +85,7 @@ export async function fetchStakeAccounts(
       validatorIcon: validatorInfo?.icon ?? "",
       lamports: Number(delegation.stake ?? account.lamports),
       state,
+      authorities: authoritiesMap.get(pubkey.toBase58()) ?? [],
     });
   }
 
