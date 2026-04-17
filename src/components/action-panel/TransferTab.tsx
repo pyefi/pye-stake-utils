@@ -7,6 +7,7 @@ import { PublicKey } from "@solana/web3.js";
 import {
   buildTransferStakeAuthorityTransaction,
   buildTransferWithdrawAuthorityTransaction,
+  buildTransferBothAuthoritiesTransaction,
 } from "@/lib/stake-ops";
 import { shortenAddress } from "@/lib/format";
 import { useWalletStore } from "@/store/wallet-provider";
@@ -206,11 +207,12 @@ export default function TransferTab() {
         currentAuthorityPubkey: new PublicKey(publicKey),
         newAuthorityPubkey: new PublicKey(newAuthority),
       };
-      // TODO: bundle into single TX in follow-up branch when both selected
       const { transaction: tx } =
-        selectedTypes[0] === "stake"
-          ? await buildTransferStakeAuthorityTransaction(params)
-          : await buildTransferWithdrawAuthorityTransaction(params);
+        selectedTypes.length === 2
+          ? await buildTransferBothAuthoritiesTransaction(params)
+          : selectedTypes[0] === "stake"
+            ? await buildTransferStakeAuthorityTransaction(params)
+            : await buildTransferWithdrawAuthorityTransaction(params);
       const sig = await sendTransaction(tx, connection);
       await connection.confirmTransaction(sig, "confirmed");
       setTxSuccess(sig);
