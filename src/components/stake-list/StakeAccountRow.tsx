@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { AuthorityBadge, StateBadge } from "@/components/ui/badge";
+import { StateBadge } from "@/components/ui/badge";
 import type { StakeAccount } from "@/lib/types";
 
 const LAMPORTS_PER_SOL = 1_000_000_000;
@@ -73,9 +73,6 @@ export default function StakeAccountRow({ account, selected, onSelect }: Props) 
           {account.pubkey.slice(0, 4)}
         </span>
         <StateBadge state={account.state} />
-        {account.authorities.map((authority) => (
-          <AuthorityBadge key={authority} authority={authority} />
-        ))}
       </div>
 
       {/* SOL amount */}
