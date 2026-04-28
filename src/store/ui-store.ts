@@ -1,6 +1,6 @@
 import { createStore } from "zustand/vanilla";
 
-export type Tab = "state-change" | "split" | "transfer";
+export type Tab = "state-change" | "split" | "transfer" | "merge";
 export type TxStatus = "pending" | "success" | "error" | null;
 
 export interface UIState {
@@ -8,6 +8,7 @@ export interface UIState {
   activeTab: Tab;
   splitSol: number;
   transferAddress: string;
+  mergeSourcePubkey: string | null;
   txStatus: TxStatus;
   txSignature: string | null;
   txError: string | null;
@@ -18,6 +19,7 @@ export interface UIActions {
   setActiveTab: (tab: Tab) => void;
   setSplitSol: (sol: number) => void;
   setTransferAddress: (address: string) => void;
+  setMergeSourcePubkey: (pubkey: string | null) => void;
   setTxStatus: (status: TxStatus) => void;
   setTxSuccess: (signature: string) => void;
   setTxError: (error: string) => void;
@@ -31,6 +33,7 @@ const initialState: UIState = {
   activeTab: "state-change",
   splitSol: 0,
   transferAddress: "",
+  mergeSourcePubkey: null,
   txStatus: null,
   txSignature: null,
   txError: null,
@@ -54,6 +57,10 @@ export function createUIStore() {
 
     setTransferAddress(address) {
       set({ transferAddress: address });
+    },
+
+    setMergeSourcePubkey(pubkey) {
+      set({ mergeSourcePubkey: pubkey });
     },
 
     setTxStatus(status) {

@@ -168,3 +168,22 @@
 .mono-nums {
   font-feature-settings: 'cv01' 1, 'cv02' 1, 'cv03' 1, 'cv04' 1, 'zero' 1, 'lnum' 1, 'tnum' 1;
 }
+
+.scrollbar-thin-themed {
+  scrollbar-width: thin;
+  scrollbar-color: var(--layers-elevation-highlight) transparent;
+}
+.scrollbar-thin-themed::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+.scrollbar-thin-themed::-webkit-scrollbar-track {
+  background: transparent;
+}
+.scrollbar-thin-themed::-webkit-scrollbar-thumb {
+  background-color: var(--layers-elevation-highlight);
+  border-radius: 3px;
+}
+.scrollbar-thin-themed::-webkit-scrollbar-thumb:hover {
+  background-color: var(--text-secondary);
+}

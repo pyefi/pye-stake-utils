@@ -6,10 +6,12 @@ import type { Tab } from "@/store/ui-store";
 import StateChangeTab from "./StateChangeTab";
 import SplitTab from "./SplitTab";
 import TransferTab from "./TransferTab";
+import MergeTab from "./MergeTab";
 
 const tabs: { id: Tab; label: string }[] = [
   { id: "state-change", label: "State Change" },
   { id: "split", label: "Split" },
+  { id: "merge", label: "Merge" },
   { id: "transfer", label: "Transfer" },
 ];
 
@@ -70,6 +72,7 @@ export default function ActionPanel() {
         {activeTab === "state-change" && <StateChangeTab />}
         {activeTab === "split" && <SplitTab />}
         {activeTab === "transfer" && <TransferTab />}
+        {activeTab === "merge" && <MergeTab />}
       </div>
     </div>
   );

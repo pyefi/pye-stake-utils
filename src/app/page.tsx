@@ -30,7 +30,7 @@ export default function Home() {
           </div>
 
           {/* Desktop: side-by-side */}
-          <div className="hidden md:flex gap-4 min-h-[590px]">
+          <div className="hidden md:flex gap-4 h-[590px]">
             <div className="w-[380px] shrink-0">
               <StakeAccountList />
             </div>
