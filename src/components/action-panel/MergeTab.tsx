@@ -14,14 +14,16 @@ const monoStyle = {
 
 function AccountSummaryRow({
   account,
-  trailing,
+  leading,
   surface = "lowered",
   isLast = false,
+  showIcon = true,
 }: {
   account: StakeAccount;
-  trailing?: React.ReactNode;
+  leading?: React.ReactNode;
   surface?: "lowered" | "raised";
   isLast?: boolean;
+  showIcon?: boolean;
 }) {
   const isRaised = surface === "raised";
   const lastClasses = isLast ? "rounded-b-[6px]" : "";
@@ -33,24 +35,26 @@ function AccountSummaryRow({
 
   return (
     <div className={`flex items-center gap-3 ${surfaceClasses}`}>
-      {account.validatorIcon ? (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img
-          src={account.validatorIcon}
-          alt={account.validatorName}
-          className={`${iconSize} rounded-full border border-layers-elevation-shadow shrink-0`}
-        />
-      ) : (
-        <div
-          className={`${iconSize} rounded-full bg-layers-surface-lowered-2 border border-layers-elevation-shadow flex items-center justify-center shrink-0`}
-        >
-          <span
-            className={`${isRaised ? "text-xs" : "text-[10px]"} text-text-secondary`}
+      {leading}
+      {showIcon &&
+        (account.validatorIcon ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={account.validatorIcon}
+            alt={account.validatorName}
+            className={`${iconSize} rounded-full border border-layers-elevation-shadow shrink-0`}
+          />
+        ) : (
+          <div
+            className={`${iconSize} rounded-full bg-layers-surface-lowered-2 border border-layers-elevation-shadow flex items-center justify-center shrink-0`}
           >
-            {(account.validatorName || "??").slice(0, 2)}
-          </span>
-        </div>
-      )}
+            <span
+              className={`${isRaised ? "text-xs" : "text-[10px]"} text-text-secondary`}
+            >
+              {(account.validatorName || "??").slice(0, 2)}
+            </span>
+          </div>
+        ))}
       <div className="flex-1 min-w-0">
         <div className="flex items-center justify-between gap-2">
           <span className={`${nameSize} text-text-primary truncate`}>
@@ -70,7 +74,6 @@ function AccountSummaryRow({
           {formatSol(account.lamports)} SOL · {account.state}
         </p>
       </div>
-      {trailing}
     </div>
   );
 }
@@ -179,8 +182,9 @@ export default function MergeTab() {
                   >
                     <AccountSummaryRow
                       account={account}
-                      trailing={<SourceRadio checked={checked} />}
+                      leading={<SourceRadio checked={checked} />}
                       isLast={isLast}
+                      showIcon={false}
                     />
                   </button>
                 );
