@@ -5,6 +5,8 @@ export { buildSplitStakeTransaction } from "./split-stake";
 export type { SplitStakeParams, SplitStakeResult } from "./split-stake";
 export { buildMergeStakeTransaction } from "./merge-stake";
 export type { MergeStakeParams, MergeStakeResult } from "./merge-stake";
+export { validateMerge } from "./merge-validation";
+export type { ValidateMergeResult } from "./merge-validation";
 export { buildDeactivateStakeTransaction } from "./deactivate-stake";
 export type { DeactivateStakeParams, DeactivateStakeResult } from "./deactivate-stake";
 export { buildWithdrawStakeTransaction } from "./withdraw-stake";
