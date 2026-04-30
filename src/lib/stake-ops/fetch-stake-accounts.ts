@@ -1,6 +1,11 @@
 import { Connection, PublicKey } from "@solana/web3.js";
 import { STAKE_PROGRAM_ID } from "@/lib/stake-constants";
-import type { StakeAccount, StakeAccountState, StakeAuthority } from "@/lib/types";
+import type {
+  StakeAccount,
+  StakeAccountState,
+  StakeAuthority,
+  StakeLockup,
+} from "@/lib/types";
 
 export async function fetchStakeAccounts(
   connection: Connection,
@@ -45,6 +50,13 @@ export async function fetchStakeAccounts(
       account.data as {
         parsed?: {
           info?: {
+            meta?: {
+              lockup?: {
+                custodian?: string;
+                epoch?: number | string;
+                unixTimestamp?: number | string;
+              };
+            };
             stake?: {
               delegation?: {
                 voter?: string;
@@ -59,6 +71,19 @@ export async function fetchStakeAccounts(
     ).parsed;
     const delegation = parsed?.info?.stake?.delegation;
     if (!delegation?.voter) continue;
+
+    const rawLockup = parsed?.info?.meta?.lockup;
+    const lockupEpoch = Number(rawLockup?.epoch ?? 0);
+    const lockupUnix = Number(rawLockup?.unixTimestamp ?? 0);
+    const lockupCustodian = rawLockup?.custodian ?? "";
+    const lockup: StakeLockup | null =
+      lockupEpoch === 0 && lockupUnix === 0
+        ? null
+        : {
+            epoch: lockupEpoch,
+            unixTimestamp: lockupUnix,
+            custodian: lockupCustodian,
+          };
 
     const activationEpoch = BigInt(delegation.activationEpoch ?? "0");
     const deactivationEpoch = BigInt(
@@ -86,6 +111,7 @@ export async function fetchStakeAccounts(
       lamports: Number(delegation.stake ?? account.lamports),
       state,
       authorities: authoritiesMap.get(pubkey.toBase58()) ?? [],
+      lockup,
     });
   }
 
