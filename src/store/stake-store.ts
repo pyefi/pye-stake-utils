@@ -1,6 +1,6 @@
 import { createStore } from "zustand/vanilla";
 import { Connection, PublicKey } from "@solana/web3.js";
-import { fetchStakeAccounts } from "@/lib/stake-ops";
+import { fetchMinimumDelegation, fetchStakeAccounts } from "@/lib/stake-ops";
 import type { StakeAccount } from "@/lib/types";
 
 export interface StakeState {
@@ -9,6 +9,12 @@ export interface StakeState {
   error: string | null;
   lastFetchedAt: number | null;
   validatorMap: Map<string, { name: string; icon: string }> | null;
+  /**
+   * Cluster minimum delegated stake, in lamports. Null until loaded. Actions
+   * that would leave an account below this fail on chain, so the UI must not
+   * validate amounts before it is known.
+   */
+  minDelegationLamports: number | null;
 }
 
 export interface StakeActions {
@@ -20,6 +26,7 @@ export interface StakeActions {
     owner: PublicKey,
     validatorMap?: Map<string, { name: string; icon: string }>,
   ) => Promise<void>;
+  loadMinDelegation: (connection: Connection) => Promise<void>;
   reset: () => void;
 }
 
@@ -31,6 +38,7 @@ const initialState: StakeState = {
   error: null,
   lastFetchedAt: null,
   validatorMap: null,
+  minDelegationLamports: null,
 };
 
 export function createStakeStore() {
@@ -69,8 +77,17 @@ export function createStakeStore() {
       }
     },
 
+    async loadMinDelegation(connection) {
+      // Cluster constant that only changes on feature activation, so one fetch
+      // per session is enough.
+      if (get().minDelegationLamports !== null) return;
+      set({ minDelegationLamports: await fetchMinimumDelegation(connection) });
+    },
+
     reset() {
-      set(initialState);
+      // Wallet-scoped state only. minDelegationLamports describes the cluster,
+      // not the wallet, and is fetched once per session.
+      set({ ...initialState, minDelegationLamports: get().minDelegationLamports });
     },
   }));
 }
