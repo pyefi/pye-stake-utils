@@ -14,10 +14,17 @@ export default function StakeSyncer() {
   const publicKey = useWalletStore((s) => s.publicKey);
   const refresh = useStakeStore((s) => s.refresh);
   const reset = useStakeStore((s) => s.reset);
+  const loadMinDelegation = useStakeStore((s) => s.loadMinDelegation);
   const stakeAccounts = useStakeStore((s) => s.stakeAccounts);
   const lastFetchedAt = useStakeStore((s) => s.lastFetchedAt);
   const selectedAccountPubkey = useUIStore((s) => s.selectedAccountPubkey);
   const selectAccount = useUIStore((s) => s.selectAccount);
+
+  // Cluster constant, independent of the wallet — load it up front so the
+  // action panels can validate against it before the first transaction.
+  useEffect(() => {
+    loadMinDelegation(connection);
+  }, []);
 
   useEffect(() => {
     if (walletStatus === "connected" && publicKey) {

@@ -1,4 +1,8 @@
 export { fetchStakeAccounts } from "./fetch-stake-accounts";
+export {
+  fetchMinimumDelegation,
+  FALLBACK_MIN_DELEGATION_LAMPORTS,
+} from "./fetch-minimum-delegation";
 export { buildDelegateStakeTransaction } from "./delegate-stake";
 export type { DelegateStakeParams, DelegateStakeResult } from "./delegate-stake";
 export { buildSplitStakeTransaction } from "./split-stake";

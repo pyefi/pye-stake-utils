@@ -9,8 +9,8 @@ import { useWalletStore } from "@/store/wallet-provider";
 import { useStakeStore } from "@/store/stake-provider";
 import { useUIStore } from "@/store/ui-provider";
 import { Button } from "@/components/ui/button";
-import { validateSplitAmount } from "@/lib/split-validation";
-import { solToLamports } from "@/lib/format";
+import { canSplitAccount, validateSplitAmount } from "@/lib/split-validation";
+import { lamportsToSol, solToLamports } from "@/lib/format";
 
 const LAMPORTS_PER_SOL = 1_000_000_000;
 
@@ -24,6 +24,7 @@ export default function SplitTab() {
 
   const stakeAccounts = useStakeStore((s) => s.stakeAccounts);
   const refresh = useStakeStore((s) => s.refresh);
+  const minDelegationLamports = useStakeStore((s) => s.minDelegationLamports);
 
   const selectedPubkey = useUIStore((s) => s.selectedAccountPubkey);
   const splitSol = useUIStore((s) => s.splitSol);
@@ -117,12 +118,32 @@ export default function SplitTab() {
     );
   }
 
-  const totalSol = selectedAccount.lamports / LAMPORTS_PER_SOL;
+  // selectedAccount.lamports is the account's *delegated* stake, which is what
+  // the stake program checks the minimum delegation against.
+  const delegatedLamports = selectedAccount.lamports;
+  const totalSol = delegatedLamports / LAMPORTS_PER_SOL;
   const originalSol = Math.max(0, totalSol - splitSol);
-  const validationError = validateSplitAmount(splitSol, totalSol);
+
+  const minDelegationKnown = minDelegationLamports !== null;
+  const tooSmallToSplit =
+    minDelegationKnown &&
+    !canSplitAccount(delegatedLamports, minDelegationLamports);
+
+  // Validate the exact lamport amount the transaction will carry, so the UI and
+  // the submitted instruction can never disagree about the rounding.
+  const validationError = minDelegationKnown
+    ? validateSplitAmount(
+        solToLamports(splitSol),
+        delegatedLamports,
+        minDelegationLamports,
+      )
+    : null;
+
+  const splitBlocked =
+    !minDelegationKnown || tooSmallToSplit || !!validationError;
 
   const handleSplit = async () => {
-    if (!publicKey || validationError) return;
+    if (!publicKey || splitBlocked) return;
     setTxStatus("pending");
     try {
       const { transaction, newStakeKeypair } =
@@ -167,7 +188,8 @@ export default function SplitTab() {
               }
             }}
             placeholder="0"
-            className="flex-1 bg-transparent text-sm text-text-primary placeholder:text-text-secondary outline-none"
+            disabled={tooSmallToSplit}
+            className="flex-1 bg-transparent text-sm text-text-primary placeholder:text-text-secondary outline-none disabled:cursor-not-allowed"
             style={monoStyle}
           />
           <span
@@ -177,7 +199,7 @@ export default function SplitTab() {
             SOL
           </span>
         </div>
-        {validationError && splitSol > 0 && (
+        {validationError && splitSol > 0 && !tooSmallToSplit && (
           <p className="text-xs text-brand-action-red">{validationError}</p>
         )}
       </div>
@@ -255,10 +277,23 @@ export default function SplitTab() {
       {/* Bottom section */}
       <div className="flex flex-col gap-3">
         {/* Info alert */}
-        <div className="p-3 rounded-[6px] bg-layers-surface-lowered-1 border-t border-layers-elevation-shadow shadow-[inset_0px_-1px_0px_0px_var(--layers-elevation-highlight)] text-xs text-text-secondary">
-          Both accounts inherit the same validator and activation status. A new
-          stake account address is generated for the split portion.
-        </div>
+        {tooSmallToSplit ? (
+          <div className="p-3 rounded-[6px] bg-[rgba(229,72,77,0.1)] border border-[rgba(229,72,77,0.3)] text-xs text-brand-action-red">
+            This account holds{" "}
+            {totalSol.toLocaleString(undefined, {
+              maximumFractionDigits: 4,
+            })}{" "}
+            SOL and cannot be split. The network requires every stake account to
+            keep at least {lamportsToSol(minDelegationLamports)} SOL delegated,
+            so a split needs at least{" "}
+            {lamportsToSol(minDelegationLamports) * 2} SOL to start with.
+          </div>
+        ) : (
+          <div className="p-3 rounded-[6px] bg-layers-surface-lowered-1 border-t border-layers-elevation-shadow shadow-[inset_0px_-1px_0px_0px_var(--layers-elevation-highlight)] text-xs text-text-secondary">
+            Both accounts inherit the same validator and activation status. A new
+            stake account address is generated for the split portion.
+          </div>
+        )}
 
         {/* Tx feedback */}
         {txStatus === "success" && txSignature && (
@@ -292,7 +327,7 @@ export default function SplitTab() {
           size="lg"
           className="w-full"
           onClick={handleSplit}
-          disabled={!!validationError || splitSol === 0 || txStatus === "pending"}
+          disabled={splitBlocked || splitSol === 0 || txStatus === "pending"}
         >
           {txStatus === "pending" ? "Splitting..." : "Confirm Split"}
         </Button>
